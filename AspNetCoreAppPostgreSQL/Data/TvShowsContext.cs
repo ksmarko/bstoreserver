@@ -13,6 +13,9 @@ namespace AspNetCoreAppPostgreSQL.Models
         {
         }
 
-        public DbSet<AspNetCoreAppPostgreSQL.Models.TvShow> TvShow { get; set; }
+        public DbSet<TvShow> TvShow { get; set; }
+        public DbSet<Book> Books { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Review> Reviews { get; set; }
     }
 }
