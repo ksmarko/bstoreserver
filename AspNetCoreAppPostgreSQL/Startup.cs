@@ -11,6 +11,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using AspNetCoreAppPostgreSQL.Models;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Buffers;
 
 namespace AspNetCoreAppPostgreSQL
 {
@@ -34,7 +37,14 @@ namespace AspNetCoreAppPostgreSQL
             });
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(opt =>
+            {
+                opt.OutputFormatters.Clear();
+                opt.OutputFormatters.Add(new JsonOutputFormatter(new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                }, ArrayPool<char>.Shared));
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             /*services.AddDbContext<TvShowsContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("TvShowsContext")));*/

@@ -26,7 +26,7 @@ namespace AspNetCoreAppPostgreSQL.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> Get(int id)
         {
-            var book = await _context.Books.Include(x => x.Reviews).FirstOrDefaultAsync(m => m.Id == id);
+            var book = await _context.Books.Include(x => x.Reviews).ThenInclude(x => x.User).FirstOrDefaultAsync(m => m.Id == id);
 
             if (book == null)
             {
