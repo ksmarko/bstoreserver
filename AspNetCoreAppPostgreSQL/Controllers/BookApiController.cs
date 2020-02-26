@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AspNetCoreAppPostgreSQL.Controllers
 {
     [ApiController]
-    [Route("/api/books")]
+    [Route("/api/book")]
     public class BookApiController : ControllerBase
     {
         private readonly TvShowsContext _context;
@@ -72,7 +72,7 @@ namespace AspNetCoreAppPostgreSQL.Controllers
             return book;
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var book = await _context.Books.FirstOrDefaultAsync(m => m.Id == id);
@@ -85,6 +85,39 @@ namespace AspNetCoreAppPostgreSQL.Controllers
 
             return NoContent();
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, UpdateBookRequest request)
+        {
+            var book = await _context.Books.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (book != null)
+            {
+                book.Img = request.Img ?? book.Img;
+                book.Name = request.Name ?? book.Name;
+                book.Author = request.Author ?? book.Author;
+                book.Year = request.Year ?? book.Year;
+                book.Price = request.Price ?? book.Price;
+                book.DownloadLink = request.DownloadLink ?? book.DownloadLink;
+                book.Text = request.Text ?? book.Text;
+
+                _context.Books.Update(book);
+                await _context.SaveChangesAsync();
+            }
+
+            return NoContent();
+        }
+    }
+
+    public class UpdateBookRequest
+    {
+        public string Img { get; set; } //base64string
+        public string Name { get; set; }
+        public string Author { get; set; }
+        public string Year { get; set; }
+        public double? Price { get; set; }
+        public string DownloadLink { get; set; }
+        public string Text { get; set; }
     }
 
     public class AddReviewRequest

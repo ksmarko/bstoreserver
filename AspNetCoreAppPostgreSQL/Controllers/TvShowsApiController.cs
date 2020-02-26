@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace AspNetCoreAppPostgreSQL.Controllers
 {
     [ApiController]
-    [Route("/api/tvshows")]
+    [Route("/api/tvshow")]
     public class TvShowsApiController : ControllerBase
     {
         private readonly TvShowsContext _context;
