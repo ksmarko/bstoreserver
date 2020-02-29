@@ -1,10 +1,8 @@
 ﻿using AspNetCoreAppPostgreSQL.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AspNetCoreAppPostgreSQL.Controllers
@@ -21,14 +19,14 @@ namespace AspNetCoreAppPostgreSQL.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request)
+        public async Task<ActionResult<User>> Login(LoginRequest request)
         {
             var existing = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
 
             if (existing == null)
                 return BadRequest("Invalid email or password");
 
-            return Ok();
+            return existing;
         }
 
         [HttpPost("registration")]
@@ -51,6 +49,12 @@ namespace AspNetCoreAppPostgreSQL.Controllers
 
             return user;
         }
+
+        [HttpGet]
+        public async Task<ActionResult<List<User>>> GetUsers()
+        {
+            return await _context.Users.ToListAsync();
+        }
     }
 
     public class LoginRequest
@@ -64,7 +68,6 @@ namespace AspNetCoreAppPostgreSQL.Controllers
 
     public class RegisterRequest
     {
-        [Required]
         public string Name { get; set; }
 
         [Required]
