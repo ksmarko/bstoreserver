@@ -21,7 +21,8 @@ namespace AspNetCoreAppPostgreSQL.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<User>> Login(LoginRequest request)
         {
-            var existing = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
+            var existing = await _context.Users
+                .FirstOrDefaultAsync(x => x.Email == request.Email && x.Password == request.Password);
 
             if (existing == null)
                 return BadRequest("Invalid email or password");
@@ -54,6 +55,20 @@ namespace AspNetCoreAppPostgreSQL.Controllers
         public async Task<ActionResult<List<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var existing = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (existing != null)
+            {
+                _context.Remove(existing);
+                await _context.SaveChangesAsync();
+            }
+
+            return NoContent();
         }
     }
 
